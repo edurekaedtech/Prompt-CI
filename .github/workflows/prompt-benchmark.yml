@@ -26,4 +26,4 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          python prompt_ci_demo/evaluate_prompts.py
+          python evaluate_prompts.py
