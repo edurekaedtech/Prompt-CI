@@ -192,7 +192,7 @@ def evaluate_prompt_on_dataset(data: List[Dict[str, Any]]) -> Metrics:
     metrics = Metrics()
     for ex in data:
         prompt = build_prompt(ex)
-        print(f"➡️ Evaluating example {ex['id']} ({ex['task_type']})...")
+        print(f" Evaluating example {ex['id']} ({ex['task_type']})...")
         start = time.time()
         prediction = call_llm(prompt)
         elapsed = time.time() - start
