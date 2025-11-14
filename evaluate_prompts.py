@@ -220,7 +220,7 @@ def evaluate_prompt_on_dataset(data: List[Dict[str, Any]]) -> Metrics:
 # 7. Aggregate + CI Gate
 # -----------------------------
 def main():
-    print("🚀 Running prompt benchmark on test dataset...\n")
+    print(" Running prompt benchmark on test dataset...\n")
     metrics = evaluate_prompt_on_dataset(EVAL_DATA)
     acc = (
         metrics.classification_correct / metrics.classification_total
@@ -237,25 +237,25 @@ def main():
         if metrics.judge_count
         else 0.0
     )
-    print("📊 Aggregate Metrics")
+    print(" Aggregate Metrics")
     print(f"- Classification accuracy : {acc:.2f}")
     print(f"- Avg similarity (0–1)    : {avg_sim:.2f}")
     print(f"- Avg judge score (1–5)   : {avg_judge:.2f}\n")
     passed = True
     if acc < MIN_CLASSIFICATION_ACCURACY:
-        print(f"❌ FAIL: accuracy {acc:.2f} < threshold {MIN_CLASSIFICATION_ACCURACY:.2f}")
+        print(f" FAIL: accuracy {acc:.2f} < threshold {MIN_CLASSIFICATION_ACCURACY:.2f}")
         passed = False
     if avg_sim < MIN_AVG_SIMILARITY:
-        print(f"❌ FAIL: avg similarity {avg_sim:.2f} < threshold {MIN_AVG_SIMILARITY:.2f}")
+        print(f" FAIL: avg similarity {avg_sim:.2f} < threshold {MIN_AVG_SIMILARITY:.2f}")
         passed = False
     if avg_judge < MIN_AVG_JUDGE_SCORE:
-        print(f"❌ FAIL: avg judge score {avg_judge:.2f} < threshold {MIN_AVG_JUDGE_SCORE:.2f}")
+        print(f" FAIL: avg judge score {avg_judge:.2f} < threshold {MIN_AVG_JUDGE_SCORE:.2f}")
         passed = False
     if passed:
-        print("✅ All thresholds met. Prompt template PASSES the benchmark.")
+        print(" All thresholds met. Prompt template PASSES the benchmark.")
         sys.exit(0)
     else:
-        print("🚫 Thresholds not met. Failing CI build.")
+        print(" Thresholds not met. Failing CI build.")
         sys.exit(1)
 
 if __name__ == "__main__":
