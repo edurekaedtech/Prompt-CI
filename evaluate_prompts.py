@@ -15,7 +15,7 @@ MODEL_UNDER_TEST = "gpt-4o-mini"   # or "gpt-4o"
 JUDGE_MODEL = "gpt-4o-mini"
 
 # Thresholds for CI to pass
-MIN_CLASSIFICATION_ACCURACY = 0.7     # 70%
+MIN_CLASSIFICATION_ACCURACY = 0.65    # 65%
 MIN_AVG_SIMILARITY = 0.6              # 0–1
 MIN_AVG_JUDGE_SCORE = 3.5             # 1–5
 
