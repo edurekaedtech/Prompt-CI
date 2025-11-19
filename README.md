@@ -1,1 +1,1 @@
-A  demo repo for the CI pipeline.
+A repo for demonstration of CI pipeline.
