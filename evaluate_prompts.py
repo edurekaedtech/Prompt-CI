@@ -1,3 +1,15 @@
+## Demo: Integrating Prompt Templates in CI/CD Workflows
+
+## Scenario :You are an AI Engineer responsible for ensuring the quality and stability of an in-house LLM that 
+## supports tasks like summarization, sentiment classification, and reasoning across multiple products. To prevent 
+## performance regressions, your team uses a CI pipeline where every model update must pass an automated benchmark.
+
+## 1. Understand the Purpose of LLM Benchmarking in CI/CD
+## 2. Build and Use a Unified Prompt Template for Multiple NLP Tasks
+## 3. Interact with the OpenAI Chat Completion API Programmatically
+## 4. Aggregate Performance Metrics for CI Decision-Making
+## 5. Build a Reusable, Extensible Evaluation Pipeline
+
 import os
 import time
 import json
@@ -8,26 +20,22 @@ from difflib import SequenceMatcher
 
 import openai
 
-# -----------------------------
-# 0. Config
-# -----------------------------
-MODEL_UNDER_TEST = "gpt-4o-mini"   # or "gpt-4o"
+#  Config
+MODEL_UNDER_TEST = "gpt-4o-mini"   
 JUDGE_MODEL = "gpt-4o-mini"
 
 # Thresholds for CI to pass
-MIN_CLASSIFICATION_ACCURACY = 0.65    # 65%
-MIN_AVG_SIMILARITY = 0.6              # 0–1
-MIN_AVG_JUDGE_SCORE = 3.5             # 1–5
+MIN_CLASSIFICATION_ACCURACY = 0.65   
+MIN_AVG_SIMILARITY = 0.6             
+MIN_AVG_JUDGE_SCORE = 3.5             
 
 if not os.getenv("OPENAI_API_KEY"):
     raise RuntimeError("OPENAI_API_KEY not set in environment.")
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
-# -----------------------------
-# 1. Test Dataset
-# -----------------------------
-# Small demo dataset: 3 summarization, 3 classification, 3 reasoning
+#  Test Dataset
+
 EVAL_DATA: List[Dict[str, Any]] = [
     # Summarization tasks
     {
@@ -83,9 +91,7 @@ EVAL_DATA: List[Dict[str, Any]] = [
     },
 ]
 
-# -----------------------------
-# 2. Prompt Template Under Test
-# -----------------------------
+#  Prompt Template
 def build_prompt(example: Dict[str, Any]) -> str:
     """
     Single prompt template that handles all three task types.
@@ -110,9 +116,7 @@ def build_prompt(example: Dict[str, Any]) -> str:
         )
     raise ValueError(f"Unknown task_type: {example['task_type']}")
 
-# -----------------------------
-# 3. LLM Call Helpers
-# -----------------------------
+# LLM Call Helpers
 def call_llm(prompt: str, model: str = MODEL_UNDER_TEST, max_tokens: int = 250) -> str:
     resp = openai.chat.completions.create(
         model=model,
@@ -129,15 +133,10 @@ def call_judge(prompt: str, model: str = JUDGE_MODEL, max_tokens: int = 350) -> 
     )
     return resp.choices[0].message.content.strip()
 
-# -----------------------------
-# 4. Simple Similarity Metric
-# -----------------------------
+# Simple Similarity Metric
 def string_similarity(a: str, b: str) -> float:
     return SequenceMatcher(None, a.lower(), b.lower()).ratio()
-
-# -----------------------------
-# 5. LLM-as-a-Judge for open tasks
-# -----------------------------
+    
 def judge_prediction(example: Dict[str, Any], prediction: str) -> float:
     """
     Ask a judge model to rate how good the prediction is vs gold (1–5).
@@ -176,9 +175,8 @@ Respond with ONLY a single number between 1 and 5.
         score = 3.0
     return max(1.0, min(5.0, score))
 
-# -----------------------------
-# 6. Evaluation Loop
-# -----------------------------
+
+#  Evaluation Loop
 @dataclass
 class Metrics:
     classification_correct: int = 0
@@ -216,9 +214,8 @@ def evaluate_prompt_on_dataset(data: List[Dict[str, Any]]) -> Metrics:
         print()
     return metrics
 
-# -----------------------------
-# 7. Aggregate + CI Gate
-# -----------------------------
+
+#  Aggregate + CI Gate
 def main():
     print(" Running prompt benchmark on test dataset...\n")
     metrics = evaluate_prompt_on_dataset(EVAL_DATA)
