@@ -234,6 +234,7 @@ def main():
         if metrics.judge_count
         else 0.0
     )
+    print("=== Benchmark Results ===")
     print(" Aggregate Metrics")
     print(f"- Classification accuracy : {acc:.2f}")
     print(f"- Avg similarity (0–1)    : {avg_sim:.2f}")
